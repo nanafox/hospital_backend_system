@@ -1,0 +1,47 @@
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Python Bytecode & Caches
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual Environments
+venv/
+.env/
+.venv/
+
+# Logs & Debugging
+logs/
+*.log
+*.out
+*.err
+
+# Database & Migrations
+db.sqlite3
+*.sqlite3
+migrations/__pycache__/
+migrations/*.pyc
+
+# Pytest & Coverage
+*coverage*
+.coverage
+htmlcov/
+*.cover
+.cache
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Compiled & Temporary Files
+*.bak
+*.tmp
+.DS_Store
+
+# FastAPI Specific
+instance/
