@@ -64,8 +64,8 @@ class TokenBase(SQLModel):
 class Token(BaseResponse[TokenBase]):
     """Represents the schema for a token."""
 
-    message: str = "Token created successfully."
-    status_code: int = status.HTTP_201_CREATED
+    message: str = "Logged in successfully."
+    status_code: int = status.HTTP_200_OK
     data: TokenBase
 
 
