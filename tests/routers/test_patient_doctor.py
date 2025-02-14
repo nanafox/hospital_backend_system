@@ -114,7 +114,6 @@ class TestPatientDoctorCreationEndpoint:
         self,
         api_client: AsyncClient,
         patient_sally: User,
-        doc_jdoe: User,
         session,
     ):
         """Test that the doctor assignment without any IDs in the array
