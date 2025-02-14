@@ -7,6 +7,7 @@ from pydantic import EmailStr
 from sqlmodel import Field, Relationship
 
 from app.models.base import BaseModel
+from app.models.note import Note
 from app.models.patient_doctor import PatientDoctor
 
 
@@ -27,4 +28,13 @@ class User(BaseModel, table=True):
     patients: list["PatientDoctor"] = Relationship(
         back_populates="doctor",
         sa_relationship_kwargs={"foreign_keys": "[PatientDoctor.doctor_id]"},
+    )
+
+    doctor_notes: list["Note"] = Relationship(
+        back_populates="doctor",
+        sa_relationship_kwargs={"foreign_keys": "Note.doctor_id"},
+    )
+    patient_notes: list["Note"] = Relationship(
+        back_populates="patient",
+        sa_relationship_kwargs={"foreign_keys": "Note.patient_id"},
     )
