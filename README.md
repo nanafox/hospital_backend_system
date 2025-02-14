@@ -70,7 +70,9 @@ hospital_backend_system/
 |                            | PUT    | /api/v1/me/profile           | Update logged-in doctor’s profile |
 | **Patient-Doctor Selection** | GET    | /api/v1/doctors              | List all available doctors |
 |                            | POST   | /api/v1/me/doctors           | Select doctors as a patient |
+|                            | POST   | /api/v1/me/doctors/remove           | Remove selected doctors as a patient |
 |                            | GET    | /api/v1/me/doctors           | Retrieve patient’s selected doctors |
+|                            | GET    | /api/v1/doctors           | Retrieve all the doctors available |
 |                            | GET    | /api/v1/me/patients          | Retrieve list of patients assigned to the doctor |
 | **Doctor Notes**           | POST   | /api/v1/notes                | Submit a new doctor’s note for a patient |
 |                            | GET    | /api/v1/patients/{patient_id}/notes | Retrieve all notes for a patient |
