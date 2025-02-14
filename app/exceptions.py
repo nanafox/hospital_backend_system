@@ -36,10 +36,13 @@ class InternalServerError(HTTPException):
 class ForbiddenActionError(HTTPException):
     """Raises an HTTP 403 (forbidden) error."""
 
-    def __init__(self, *, model_name):
+    def __init__(self, *, error: str = ""):
+        if error == "":
+            error = "You are not authorized to perform this action"
+
         self.status_code = status.HTTP_403_FORBIDDEN
         self.detail = {
-            "error": f"You are not authorized to delete this {model_name}",
+            "error": error,
             "success": False,
             "status_code": self.status_code,
         }
@@ -53,6 +56,36 @@ class UnauthorizedError(HTTPException):
         self.headers = {"WWW-Authenticate": "Bearer"}
         self.detail = {
             "error": "Invalid email or password",
+            "success": False,
+            "status_code": self.status_code,
+        }
+
+
+class BadRequestError(HTTPException):
+    """Raises HTTP 400 (Bad request) error."""
+
+    def __init__(self, error: str = ""):
+        if error == "":
+            error = "Invalid request"
+
+        self.status_code = status.HTTP_400_BAD_REQUEST
+        self.detail = {
+            "error": error,
+            "success": False,
+            "status_code": self.status_code,
+        }
+
+
+class NotFoundError(HTTPException):
+    """Raises HTTP 404 (Not Found) error."""
+
+    def __init__(self, error: str = ""):
+        if error == "":
+            error = "Invalid request"
+
+        self.status_code = status.HTTP_404_NOT_FOUND
+        self.detail = {
+            "error": error,
             "success": False,
             "status_code": self.status_code,
         }
