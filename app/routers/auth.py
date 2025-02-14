@@ -43,14 +43,11 @@ async def login(
     credentials: UserLogin,
     db: DBSessionDependency,
 ):
-    try:
-        user = crud_user.get(by="email", identifier=credentials.email, db=db)
-    except Exception:
-        raise UnauthorizedError()
+    user = security.authenticate_user(
+        db=db, email=credentials.email, password=credentials.password
+    )
 
-    if not security.is_valid_password(
-        plain_password=credentials.password, hashed_password=user.password_hash
-    ):
+    if user is None:
         raise UnauthorizedError()
 
     access_token = security.create_access_token(
