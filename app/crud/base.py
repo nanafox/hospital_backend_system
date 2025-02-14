@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import Any, Dict, Generic, TypeVar
 
 from fastapi import HTTPException, status
 from sqlmodel import Session, SQLModel, select
@@ -86,10 +86,11 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         self,
         *,
         db: Session,
-        skip=0,
-        limit=settings.pagination_default_page,
+        skip: int = 0,
+        limit: int = settings.pagination_default_page,
         order_by=None,
         join_model=None,
+        filter_by: Dict | None = None,
     ):
         """Returns all objects of the model.
 
@@ -98,6 +99,7 @@ class APICrudBase(Generic[ModelType, SchemaType]):
             skip: The number of objects to skip.
             limit: The maximum number of objects to return.
             order_by: The field to order the objects by.
+            filter_by: The field to filter records with
 
         Returns:
             A list of all objects.
@@ -107,6 +109,9 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         """
         try:
             query = select(self.model)
+
+            if filter_by:
+                query = query.filter_by(**filter_by)
 
             if join_model:
                 query = query.join(join_model)
