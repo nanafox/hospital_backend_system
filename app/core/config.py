@@ -2,7 +2,7 @@
 
 """This module contains the configurations for the API."""
 
-import sys
+from datetime import datetime, timedelta, timezone
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     # API version
     api_version: str = "v1"
 
+    # Login route
+    login_route: str = f"/api/{api_version}/auth/login"
+
     # database variables
     db_type: str = "postgresql"
     db_test_url: str = ""
@@ -31,6 +34,10 @@ class Settings(BaseSettings):
     # authentication and security
     secret_key: str
     access_token_expire_minutes: int = 60
+    access_token_duration: datetime = datetime.now(timezone.utc) + timedelta(
+        minutes=access_token_expire_minutes
+    )
+
     hashing_algorithm: str = "HS256"
     minimum_password_length: int = 8
     maximum_password_length: int = 15
