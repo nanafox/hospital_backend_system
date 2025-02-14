@@ -39,7 +39,20 @@ class ForbiddenActionError(HTTPException):
     def __init__(self, *, model_name):
         self.status_code = status.HTTP_403_FORBIDDEN
         self.detail = {
-            "error": f"You are not authorized to delete this {self.model_name}",
+            "error": f"You are not authorized to delete this {model_name}",
+            "success": False,
+            "status_code": self.status_code,
+        }
+
+
+class UnauthorizedError(HTTPException):
+    """Raises an HTTP 401 (unauthorized) error."""
+
+    def __init__(self):
+        self.status_code = status.HTTP_401_UNAUTHORIZED
+        self.headers = {"WWW-Authenticate": "Bearer"}
+        self.detail = {
+            "error": "Invalid email or password",
             "success": False,
             "status_code": self.status_code,
         }
