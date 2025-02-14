@@ -10,7 +10,7 @@ from app.core.database import get_session
 from app.crud.user import crud_user
 from app.main import app
 from app.models.user import User
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserRoleEnum
 
 
 @pytest.fixture(scope="package", autouse=True)
@@ -64,11 +64,11 @@ async def api_client(session: Session):
 
 @pytest.fixture
 def doc_jdoe(session: Session) -> User:
-    """Fixture to create a user with username 'jdoe' and password 'my_password'
-    in the database.
+    """Fixture to create a doctor user.
 
-    This fixture creates a user with specific credentials in the database
-    using the provided session.
+    User Details:
+        email: jdoe@email.com
+        password: password1234
 
     Args:
         session (Session): The database session to use for creating the user.
@@ -79,7 +79,30 @@ def doc_jdoe(session: Session) -> User:
     user = UserCreate(
         email="jdoe@email.com",
         password="password1234",
-        role="Doctor",
+        role=UserRoleEnum.doctor,
         name="John Doe",
+    )
+    return crud_user.create(db=session, user=user)
+
+
+@pytest.fixture
+def patient_sally(session: Session) -> User:
+    """Fixture to create a patient user.
+
+    User Details:
+        email: sally@email.com
+        password: password1234
+
+    Args:
+        session (Session): The database session to use for creating the user.
+
+    Returns:
+        models.User: The created user object in the database.
+    """
+    user = UserCreate(
+        email="sally@email.com",
+        password="password1234",
+        role=UserRoleEnum.patient,
+        name="Sally Banks",
     )
     return crud_user.create(db=session, user=user)
