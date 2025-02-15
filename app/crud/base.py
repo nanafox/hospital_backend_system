@@ -7,6 +7,7 @@ from app.core.config import settings
 from app.exceptions import (
     ForbiddenActionError,
     InternalServerError,
+    NotFoundError,
     UserExistsError,
 )
 
@@ -37,10 +38,6 @@ class APICrudBase(Generic[ModelType, SchemaType]):
     def __init__(self, model: ModelType):
         self.model = model
         self.model_name = model.__name__.lower()
-        self.not_found_error = HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"{self.model_name} not found",
-        )
 
     @staticmethod
     def get_detailed_error(error: Exception):
@@ -80,7 +77,7 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         if obj := db.get(self.model, obj_id):
             return obj
 
-        raise self.not_found_error
+        raise NotFoundError(f"{self.model_name} not found")
 
     def get_all(
         self,
@@ -129,11 +126,7 @@ class APICrudBase(Generic[ModelType, SchemaType]):
                 status_code=status.HTTP_400_BAD_REQUEST,
             ) from error
 
-    def create(
-        self,
-        db: Session,
-        schema: SchemaType,
-    ):
+    def create(self, db: Session, schema: SchemaType, **kwargs: Dict[str, Any]):
         """Creates a new object.
 
         Args:
@@ -148,7 +141,9 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         """
         try:
             obj = self.model.model_validate(schema)
-            return self.model(**obj.model_dump()).save(db=db, created=True)
+            return self.model(**obj.model_dump()).save(
+                db=db, created=True, **kwargs
+            )
         except Exception as e:
             error_name = e.__class__.__name__
 
@@ -183,10 +178,8 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         """
         db_obj = self.get_by_id(db=db, obj_id=obj_id)
         if obj_owner_id != obj_id:
-            raise HTTPException(
-                detail="You are not authorized to update this "
-                f"{self.model_name}",
-                status_code=status.HTTP_403_FORBIDDEN,
+            raise ForbiddenActionError(
+                error=f"You are not authorized to update this {self.model_name}",
             )
         try:
             return db_obj.sqlmodel_update(
@@ -220,6 +213,8 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         """
         obj = self.get_by_id(db=db, obj_id=obj_id)
         if obj_owner_id != obj_id:
-            raise ForbiddenActionError(model_name=self.model_name)
+            raise ForbiddenActionError(
+                error="You are forbidden to perform this action"
+            )
 
         obj.delete(db=db)

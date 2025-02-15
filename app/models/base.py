@@ -29,12 +29,12 @@ class BaseModel(Timestamp):
         """Counts the number of records in the table for this model."""
         return session.count(cls, db=db)
 
-    def save(self, *, db: DBSessionDependency, created: bool = False):
+    def save(self, *, db: DBSessionDependency, created: bool = False, **kwargs):
         """Saves the current object to the database."""
         self.updated_at = (
             self.created_at if created else datetime.now(timezone.utc)
         )
-        return session.save(self, db=db)
+        return session.save(self, db=db, **kwargs)
 
     def delete(self, *, db: DBSessionDependency):
         """Deletes the current object from the database."""
