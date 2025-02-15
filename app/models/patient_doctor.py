@@ -38,3 +38,6 @@ class PatientDoctor(SQLModel, table=True):
     def count(cls, db: DBSessionDependency) -> int:
         """Counts the number of records in the table for this model."""
         return session.count(cls, db=db)
+
+    def save(self, db: DBSessionDependency):
+        return session.save(db=db, model_instance=self)
