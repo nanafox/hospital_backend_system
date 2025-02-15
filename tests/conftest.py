@@ -106,3 +106,15 @@ def patient_sally(session: Session) -> User:
         name="Sally Banks",
     )
     return crud_user.create(db=session, user=user)
+
+
+@pytest.fixture
+def patient_bob(session: Session) -> User:
+    user = UserCreate(
+        email="bob@email.com",
+        password="password1234",
+        role=UserRoleEnum.patient,
+        name="Bob Manny",
+    )
+
+    return crud_user.create(db=session, user=user)
