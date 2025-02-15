@@ -3,7 +3,6 @@
 """This module tests the authentication endpoints to ensure users can create
 account, login, and update their profile as needed."""
 
-
 import pytest
 from fastapi import status
 from httpx import AsyncClient, Response
@@ -63,9 +62,7 @@ class TestSignUpEndpoint:
         assert not hasattr(user_response.data, "password_hash")
         assert not hasattr(user_response.data, "password")
 
-    async def test_invalid_data_raises_error_422(
-        self, api_client: AsyncClient
-    ):
+    async def test_invalid_data_raises_error_422(self, api_client: AsyncClient):
         """Test that invalid request bodies raises error 422."""
         response: Response = await api_client.post(
             self.auth_endpoint, json={"email": "jdoe@email.com"}
@@ -111,9 +108,7 @@ class TestSignUpEndpoint:
         # ensure that the number of users is the same and didn't change
         assert User.count(db=session) == 1
 
-    async def test_signup_with_invalid_role_type(
-        self, api_client: AsyncClient
-    ):
+    async def test_signup_with_invalid_role_type(self, api_client: AsyncClient):
         """Test that invalid roles are not allowed to create accounts."""
         response: Response = await api_client.post(
             self.auth_endpoint,
@@ -130,9 +125,7 @@ class TestSignUpEndpoint:
 
         assert error.get("msg") == "Input should be 'Doctor' or 'Patient'"
 
-    async def test_patient_signup_works(
-        self, session, api_client: AsyncClient
-    ):
+    async def test_patient_signup_works(self, session, api_client: AsyncClient):
         """Test that patient account creations work as well."""
         response: Response = await api_client.post(
             self.auth_endpoint,
@@ -165,7 +158,7 @@ class TestLoginEndpoint:
         """
         response: Response = await api_client.post(
             self.auth_endpoint,
-            json={"email": "jdoe@email.com", "password": "password1234"},
+            data={"username": "jdoe@email.com", "password": "password1234"},
         )
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -177,7 +170,7 @@ class TestLoginEndpoint:
         credentials."""
         response: Response = await api_client.post(
             self.auth_endpoint,
-            json={"email": doc_jdoe.email, "password": "password1234"},
+            data={"username": doc_jdoe.email, "password": "password1234"},
         )
         token_response = Token(**response.json())
 
@@ -194,7 +187,7 @@ class TestLoginEndpoint:
         """Test that login fails for incorrect passwords."""
         response: Response = await api_client.post(
             self.auth_endpoint,
-            json={"email": doc_jdoe.email, "password": "WRONG PASSWORD"},
+            data={"username": doc_jdoe.email, "password": "WRONG PASSWORD"},
         )
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -206,7 +199,7 @@ class TestLoginEndpoint:
         header."""
         response: Response = await api_client.post(
             self.auth_endpoint,
-            json={"email": "bad@email.com", "password": "WRONG PASSWORD"},
+            data={"username": "bad@email.com", "password": "WRONG PASSWORD"},
         )
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED

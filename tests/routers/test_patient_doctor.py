@@ -47,7 +47,7 @@ class TestPatientDoctorCreationEndpoint:
         """Test that doctors are forbidden from selecting doctors."""
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": doc_jdoe.email, "password": "password1234"},
+            data={"username": doc_jdoe.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -83,7 +83,7 @@ class TestPatientDoctorCreationEndpoint:
         """Test that the doctor assignment works for the patient."""
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": patient_sally.email, "password": "password1234"},
+            data={"username": patient_sally.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -120,7 +120,7 @@ class TestPatientDoctorCreationEndpoint:
         fails."""
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": patient_sally.email, "password": "password1234"},
+            data={"username": patient_sally.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -149,7 +149,7 @@ class TestPatientDoctorCreationEndpoint:
         """
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": doc_jdoe.email, "password": "password1234"},
+            data={"username": doc_jdoe.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -181,7 +181,10 @@ class TestPatientDoctorCreationEndpoint:
         """Test that non-existent doctor IDs fail."""
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": patient_sally.email, "password": "password1234"},
+            data={
+                "username": patient_sally.email,
+                "password": "password1234",
+            },
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -216,7 +219,7 @@ class TestPatientDoctorDeletionEndpoint:
     ):
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": doc_jdoe.email, "password": "password1234"},
+            data={"username": doc_jdoe.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -239,10 +242,9 @@ class TestPatientDoctorDeletionEndpoint:
     async def test_delete_non_existent_assigment(
         self, api_client: AsyncClient, patient_sally: User
     ):
-
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": patient_sally.email, "password": "password1234"},
+            data={"username": patient_sally.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -273,7 +275,7 @@ class TestPatientDoctorDeletionEndpoint:
         themselves."""
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": patient_sally.email, "password": "password1234"},
+            data={"username": patient_sally.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -324,7 +326,7 @@ class TestAssignedDoctorsListingEndpoint:
         """Test that authenticated users can view their selected doctors."""
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": patient_sally.email, "password": "password1234"},
+            data={"username": patient_sally.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -375,7 +377,7 @@ class TestDoctorPatientsListingEndpoint:
         """Tests that this endpoint is only accessible to doctors."""
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": patient_sally.email, "password": "password1234"},
+            data={"username": patient_sally.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -405,7 +407,7 @@ class TestDoctorPatientsListingEndpoint:
         # sign in as patient and select the doctor
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": patient_sally.email, "password": "password1234"},
+            data={"username": patient_sally.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
@@ -424,7 +426,7 @@ class TestDoctorPatientsListingEndpoint:
         # now sign in as the doctor and verify the patient has selected you
         sign_in_response: Response = await api_client.post(
             "/api/v1/auth/login",
-            json={"email": doc_jdoe.email, "password": "password1234"},
+            data={"username": doc_jdoe.email, "password": "password1234"},
         )
 
         assert sign_in_response.status_code == status.HTTP_200_OK
