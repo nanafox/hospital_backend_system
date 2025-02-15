@@ -2,7 +2,10 @@
 
 """This module defines the routes for user authentication and management."""
 
-from fastapi import APIRouter, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.core import security
 from app.core.config import settings
@@ -10,7 +13,7 @@ from app.core.dependencies import DBSessionDependency
 from app.crud.user import crud_user
 from app.exceptions import UnauthorizedError
 from app.schemas.base import Token, TokenBase
-from app.schemas.user import User, UserCreate, UserLogin, UserResponse
+from app.schemas.user import User, UserCreate, UserResponse
 
 router = APIRouter(tags=["Authentication"])
 
@@ -40,11 +43,11 @@ async def signup(user: UserCreate, db: DBSessionDependency):
     response_model=Token,
 )
 async def login(
-    credentials: UserLogin,
+    credentials: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: DBSessionDependency,
 ):
     user = security.authenticate_user(
-        db=db, email=credentials.email, password=credentials.password
+        db=db, email=credentials.username, password=credentials.password
     )
 
     if user is None:
