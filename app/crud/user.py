@@ -1,7 +1,7 @@
-from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
 from app.crud.base import APICrudBase
+from app.exceptions import InternalServerError, NotFoundError
 from app.models.user import User
 from app.schemas import user as schemas
 
@@ -39,7 +39,7 @@ class UserCrud(APICrudBase[User, schemas.User]):
         if user := db.exec(select(User).where(User.email == email)).first():
             return user
 
-        raise self.not_found_error
+        raise NotFoundError(error="User not found")
 
     def create(
         self,
@@ -82,14 +82,7 @@ class UserCrud(APICrudBase[User, schemas.User]):
             case "email":
                 return self.get_by_email(email=identifier, db=db)
             case _:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail={
-                        "message": "An error while performing this action",
-                        "next_steps": "If the error persists, please contact "
-                        "the system administrator.",
-                    },
-                )
+                raise InternalServerError()
 
     get = __get_user
 
