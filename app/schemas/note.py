@@ -45,7 +45,7 @@ class NoteBaseResponse(SQLModel):
             id=note.id,
             doctor=note.doctor,
             patient=note.patient,
-            content=note.get_content(),
+            content=note.content,
             created_at=note.created_at,
         )
 
