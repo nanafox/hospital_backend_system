@@ -2,7 +2,6 @@
 
 """This module defines custom exceptions for the API."""
 
-
 from fastapi import HTTPException, status
 
 

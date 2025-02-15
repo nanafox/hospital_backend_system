@@ -157,9 +157,7 @@ async def list_doctors(db: DBSessionDependency):
         message="Doctors retrieved successfully",
         status_code=status.HTTP_200_OK,
         success=True,
-        data=[
-            DoctorRead(id=doctor.id, name=doctor.name) for doctor in doctors
-        ],
+        data=[DoctorRead(id=doctor.id, name=doctor.name) for doctor in doctors],
     )
 
 
@@ -175,7 +173,7 @@ def __build_patient_doctors_response(
             doctors=[
                 PatientDoctor(
                     doctor_name=doctor.doctor.name if doctor.doctor else "",
-                    **doctor.model_dump()
+                    **doctor.model_dump(),
                 )
                 for doctor in doctors
             ],

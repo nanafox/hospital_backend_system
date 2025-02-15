@@ -2,7 +2,6 @@
 
 """This module defines the User model."""
 
-
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship
 
