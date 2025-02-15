@@ -4,23 +4,20 @@
 
 from uuid import UUID
 
-from cryptography.fernet import Fernet
 from sqlmodel import Field, Relationship
 
-from app.core.config import settings
+from app.core.dependencies import DBSessionDependency
+from app.exceptions import BadRequestError
 from app.models.base import BaseModel
-
-fernet = Fernet(settings.encryption_key)
+from app.services import encryption
 
 
 class Note(BaseModel, table=True):
     """Defines the Note model."""
 
     doctor_id: UUID = Field(foreign_key="users.id", nullable=False, index=True)
-    patient_id: UUID = Field(
-        foreign_key="users.id", nullable=False, index=True
-    )
-    encrypted_content: str = Field(max_length=5000)
+    patient_id: UUID = Field(foreign_key="users.id", nullable=False, index=True)
+    encrypted_content: str = Field(nullable=False)
 
     doctor: "User" = Relationship(
         sa_relationship_kwargs={"foreign_keys": "Note.doctor_id"}
@@ -29,14 +26,26 @@ class Note(BaseModel, table=True):
         sa_relationship_kwargs={"foreign_keys": "Note.patient_id"}
     )
 
-    def set_content(self, content: str):
-        """Encrypts and stores the content."""
-        self.encrypted_content = fernet.encrypt(content.encode()).decode()
+    @property
+    def content(self) -> str:
+        return encryption.decrypt(content=self.encrypted_content)
 
-    def get_content(self) -> str:
-        """Decrypts and returns the content."""
-        return (
-            fernet.decrypt(self.encrypted_content.encode()).decode()
-            if self.encrypted_content
-            else ""
-        )
+    def save(self, *, db: DBSessionDependency, created: bool = False, **kwargs):
+        """Save the new note."""
+        content = kwargs.get("content")
+
+        if not content and not self.encrypted_content:
+            raise BadRequestError(error="content can't be empty")
+
+        if content:
+            if not encryption.is_encrypted(content):
+                self.encrypted_content = encryption.encrypt(content)
+            else:
+                print("pre-encrypted error")
+                raise BadRequestError(
+                    error="content should not be pre-encrypted"
+                )
+        elif not encryption.is_encrypted(self.encrypted_content):
+            self.encrypted_content = encryption.encrypt(self.encrypted_content)
+
+        return super().save(db=db, created=created)
