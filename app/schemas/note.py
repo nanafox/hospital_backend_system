@@ -57,3 +57,18 @@ class NoteResponse(BaseResponse[NoteBaseResponse]):
 class NotesResponse(BaseResponse[List[NoteBaseResponse]]):
     data: List[NoteBaseResponse]
     count: int
+
+
+class NotesFilterParams(SQLModel):
+    doctor_id: UUID | None = Field(
+        default=None,
+        description=(
+            "The doctor to filter by, used only when the user is a patient."
+        ),
+    )
+    patient_id: UUID | None = Field(
+        default=None,
+        description=(
+            "The patient to filter by, used only when the user is a doctor."
+        ),
+    )
