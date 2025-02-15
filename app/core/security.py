@@ -40,9 +40,7 @@ def authenticate_user(
     db: DBSessionDependency, email: EmailStr, password: str
 ) -> User | None:
     """Authenticate the user using their email and password."""
-    user: User | None = db.exec(
-        select(User).where(User.email == email)
-    ).first()
+    user: User | None = db.exec(select(User).where(User.email == email)).first()
 
     if not user:
         return None
