@@ -17,28 +17,32 @@
 hospital_backend_system/
 │── app/
 │   ├── core/                # Core configurations
+│   │   ├── __init__.py      # Core package
 │   │   ├── config.py        # Environment variables & settings
 │   │   ├── database.py      # SQLModel DB setup
 │   │   ├── security.py      # Password hashing & JWT auth
+│   │   ├── dependencies.py  # Core dependencies (injection)
 │   ├── models/              # SQLModel database models
+│   │   ├── __init__.py      # Models package
 │   │   ├── user.py          # User (Doctor/Patient) model
 │   │   ├── note.py          # Doctor notes & encryption
 │   │   ├── action.py        # Actionable steps & scheduling
 │   ├── schemas/             # Pydantic (SQLModel) schemas
+│   │   ├── __init__.py      # Schemas package
 │   │   ├── user.py          # User request/response schemas
 │   │   ├── note.py          # Note submission schemas
 │   │   ├── action.py        # Actionable step schemas
 │   ├── services/            # Business logic
-│   │   ├── auth.py          # JWT authentication
+│   │   ├── __init__.py      # Services package
 │   │   ├── encryption.py    # Note encryption utilities
 │   │   ├── llm_processor.py # LLM integration (Google Gemini/OpenAI)
 │   │   ├── scheduler.py     # Celery background tasks
 │   ├── routers/             # API routes (versioned)
-│   │   ├── v1/              # API version 1
-│   │   │   ├── auth.py      # Signup/Login routes
-│   │   │   ├── doctors.py   # Doctor-related routes
-│   │   │   ├── patients.py  # Patient-related routes
-│   │   │   ├── notes.py     # Doctor notes API
+│   │   ├── __init__.py      # API package
+│   │   ├── auth.py          # Signup/Login routes
+│   │   ├── doctors.py       # Doctor-related routes
+│   │   ├── patients.py      # Patient-related routes
+│   │   ├── notes.py         # Doctor notes API
 │   ├── main.py              # FastAPI entry point
 │   ├── exceptions.py        # Custom exceptions
 │── migrations/              # Alembic migrations (for SQLModel)
@@ -75,7 +79,8 @@ hospital_backend_system/
 |                            | GET    | /api/v1/doctors           | Retrieve all the doctors available |
 |                            | GET    | /api/v1/me/patients          | Retrieve list of patients assigned to the doctor |
 | **Doctor Notes**           | POST   | /api/v1/notes                | Submit a new doctor’s note for a patient |
-|                            | GET    | /api/v1/patients/{patient_id}/notes | Retrieve all notes for a patient |
+|                            | GET    | /api/v1/notes?patient_id={patient_id} | Retrieve all notes for a patient |
+|                            | GET    | /api/v1/notes?doctor_id={doctor_id} | Retrieve all notes from a doctor |
 | **Actionable Steps & Reminders** | GET    | /api/v1/me/actionable-steps  | Retrieve actionable steps for logged-in user |
 |                            | GET    | /api/v1/patients/{patient_id}/actionable-steps | Retrieve actionable steps for a patient |
 |                            | GET    | /api/v1/patients/{patient_id}/actionable-steps/complete | Mark step as complete for a patient |
