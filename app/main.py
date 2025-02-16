@@ -6,12 +6,14 @@ from typing import Dict
 
 from fastapi import FastAPI
 
+from app.docs import docs
 from app.routers.auth import router as auth_router
 from app.routers.notes import router as notes_router
 from app.routers.patient_doctor import router as patient_doctor_router
 
 app = FastAPI(
     version="v1",
+    description=docs,
     title="Hospital Backend System",
     docs_url="/api/swagger-docs",
     redoc_url="/api/docs",
