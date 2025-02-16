@@ -13,8 +13,8 @@ from app.crud.base import APICrudBase
 from app.exceptions import BadRequestError, ForbiddenActionError
 from app.models.note import Note
 from app.routers import CurrentUserDependency
+from app.schemas import note as schema
 from app.schemas.note import (
-    NoteBaseResponse,
     NoteCreate,
     NoteResponse,
     NotesFilterParams,
@@ -131,7 +131,7 @@ async def add_node(
     return NoteResponse(
         message="Note retrieved successfully",
         status_code=status.HTTP_200_OK,
-        data=NoteBaseResponse.model_validate(db_note),
+        data=schema.Note.model_validate(db_note),
     )
 
 
@@ -145,7 +145,72 @@ async def add_node(
 def get_note(
     note_id: UUID, db: DBSessionDependency, user: CurrentUserDependency
 ):
-    """Retrieve a single note's details."""
+    """## Retrieve Note Details
+
+    ### Endpoint
+    `GET /notes/{note_id}`
+
+    ### Summary
+    Retrieve the details of a single note.
+
+    ### Parameters
+
+    #### Path Parameters
+    - `note_id` (UUID): The unique identifier of the note to retrieve.
+
+    ### Responses
+
+    #### 200 OK
+    - **Description**: Note retrieved successfully.
+    - **Response Model**: `NoteResponse`
+      - `message` (str): A message indicating the note was retrieved successfully.
+      - `status_code` (int): The HTTP status code.
+      - `data` (Note): The details of the note.
+
+    #### 403 Forbidden
+    - **Description**: The user is not authorized to read this note.
+    - **Response Model**: `ForbiddenActionError`
+      - `error` (str): An error message indicating the user is not authorized.
+
+    ### Request Example
+    ```http
+    GET /notes/123e4567-e89b-12d3-a456-426614174000 HTTP/1.1
+    Host: example.com
+    Authorization: Bearer <token>
+    ```
+
+    ### Response Example
+
+    #### 200 OK
+    ```json
+    {
+      "message": "Note retrieved successfully",
+      "status_code": 200,
+      "data": {
+        "id": "123e4567-e89b-12d3-a456-426614174000",
+        "title": "Sample Note",
+        "content": "This is a sample note.",
+        "doctor_id": "a3c9ad01-0fbd-4083-b8e8-0b901c4ef227",
+        "patient_id": "9b91ff9a-b373-4258-bfc2-f6e3d0e8ae0f",
+        "created_at": "2023-10-01T12:00:00Z",
+        "updated_at": "2023-10-01T12:00:00Z"
+      }
+    }
+    ```
+
+    #### 403 Forbidden
+    ```json
+    {
+      "error": "You are not authorized to read this note"
+    }
+    ```
+
+    ### Security
+    - Requires authentication via a Bearer token.
+    - Access is restricted based on user roles:
+      - Doctors can only access notes they created.
+      - Patients can only access notes associated with their ID.
+    """
     note = crud_note.get_by_id(db=db, obj_id=str(note_id))
 
     # Ensure the correct user can access the note
@@ -159,7 +224,7 @@ def get_note(
     return NoteResponse(
         message="Note retrieved successfully",
         status_code=status.HTTP_200_OK,
-        data=NoteBaseResponse.model_validate(note),
+        data=schema.Note.model_validate(note),
     )
 
 
@@ -250,5 +315,5 @@ async def list_notes(
     return NotesResponse(
         message="Notes retrieved successfully",
         status_code=status.HTTP_200_OK,
-        data=[NoteBaseResponse.model_validate(note) for note in notes],
+        data=[schema.Note.model_validate(note) for note in notes],
     )
