@@ -3,6 +3,7 @@
 """This module defines the User model."""
 
 from pydantic import EmailStr
+from sqlalchemy.orm import Mapped
 from sqlmodel import Field, Relationship
 
 from app.models.base import BaseModel
@@ -19,21 +20,27 @@ class User(BaseModel, table=True):
     name: str = Field(nullable=False, description="The name of the user")
     password_hash: str
 
-    doctors: list["PatientDoctor"] = Relationship(
+    doctors: Mapped[list["PatientDoctor"]] = Relationship(
         back_populates="patient",
         sa_relationship_kwargs={"foreign_keys": "[PatientDoctor.patient_id]"},
     )
 
-    patients: list["PatientDoctor"] = Relationship(
+    patients: Mapped[list["PatientDoctor"]] = Relationship(
         back_populates="doctor",
         sa_relationship_kwargs={"foreign_keys": "[PatientDoctor.doctor_id]"},
     )
 
-    doctor_notes: list["Note"] = Relationship(
+    doctor_notes: Mapped[list["Note"]] = Relationship(
         back_populates="doctor",
-        sa_relationship_kwargs={"foreign_keys": "Note.doctor_id"},
+        sa_relationship_kwargs={
+            "foreign_keys": "Note.doctor_id",
+            "lazy": "selectin",
+        },
     )
-    patient_notes: list["Note"] = Relationship(
+    patient_notes: Mapped[list["Note"]] = Relationship(
         back_populates="patient",
-        sa_relationship_kwargs={"foreign_keys": "Note.patient_id"},
+        sa_relationship_kwargs={
+            "foreign_keys": "Note.patient_id",
+            "lazy": "selectin",
+        },
     )
