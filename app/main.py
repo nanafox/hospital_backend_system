@@ -5,10 +5,7 @@
 from typing import Dict
 
 from fastapi import FastAPI
-from sqlmodel import SQLModel
 
-from app.core.config import settings
-from app.core.database import engine
 from app.routers.auth import router as auth_router
 from app.routers.notes import router as notes_router
 from app.routers.patient_doctor import router as patient_doctor_router
@@ -28,17 +25,6 @@ app = FastAPI(
 app.include_router(auth_router, prefix="/api/v1/auth")
 app.include_router(patient_doctor_router)
 app.include_router(notes_router)
-
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-
-
-if settings.app_env == "development":
-
-    @app.on_event("startup")
-    def on_startup():
-        create_db_and_tables()
 
 
 @app.get("/", tags=["API Info & Status"], summary="Shows a welcome message")
