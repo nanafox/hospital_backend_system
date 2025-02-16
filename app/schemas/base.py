@@ -74,3 +74,17 @@ class TokenPayload(SQLModel):
 
     user_id: UUID4
     email: EmailStr
+
+
+class ErrorDetails(SQLModel):
+    """Schema for error details."""
+
+    error: str
+    status_code: int
+    success: bool = False
+
+
+class UnauthorizedErrorResponse(SQLModel):
+    """Schema for unauthorized error 401 response."""
+
+    detail: ErrorDetails
