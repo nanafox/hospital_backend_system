@@ -273,6 +273,10 @@ class TestNotesListingEndpoint:
 
         assert doctor_notes.count == 2
 
+        # verify that the IDs match correctly for Bob and Sally
+        assert doctor_notes.data[0].patient.id == patient_bob.id
+        assert doctor_notes.data[1].patient.id == patient_sally.id
+
         # Now as patient Bob retrieve the notes, must be 1
         response: Response = await api_client.post(
             "/api/v1/auth/login",
@@ -292,3 +296,4 @@ class TestNotesListingEndpoint:
         bob_notes = NotesResponse(**response.json())
 
         assert bob_notes.count == 1
+        assert bob_notes.data[0].patient.id == patient_bob.id
