@@ -3,7 +3,7 @@
 """This module defines the database connections."""
 
 from sqlalchemy.sql import func
-from sqlmodel import Session, create_engine, select
+from sqlmodel import Session, SQLModel, create_engine, select
 
 from app.core.config import settings
 
@@ -17,7 +17,9 @@ else:
 
 def get_session():
     """Yields the database session."""
-    with Session(engine) as session:
+    SQLModel.metadata.create_all(engine)
+
+    with Session(engine, expire_on_commit=False) as session:
         yield session
 
 

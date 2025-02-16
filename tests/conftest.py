@@ -33,7 +33,7 @@ def session():
     SQLModel.metadata.drop_all(bind=engine)
     SQLModel.metadata.create_all(bind=engine)
 
-    with Session(engine) as session:
+    with Session(engine, expire_on_commit=False) as session:
         yield session
 
 
