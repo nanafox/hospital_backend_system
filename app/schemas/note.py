@@ -31,7 +31,7 @@ class Doctor(Base):
     pass
 
 
-class NoteBaseResponse(SQLModel):
+class Note(SQLModel):
     id: UUID
     doctor: Doctor
     patient: Patient
@@ -50,12 +50,12 @@ class NoteBaseResponse(SQLModel):
         )
 
 
-class NoteResponse(BaseResponse[NoteBaseResponse]):
-    data: NoteBaseResponse
+class NoteResponse(BaseResponse[Note]):
+    data: Note
 
 
-class NotesResponse(BaseResponse[List[NoteBaseResponse]]):
-    data: List[NoteBaseResponse]
+class NotesResponse(BaseResponse[List[Note]]):
+    data: List[Note]
     count: int
 
 
