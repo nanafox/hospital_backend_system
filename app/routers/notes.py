@@ -38,7 +38,7 @@ def is_my_patient(patient_id: UUID, doctor: CurrentUserDependency):
     summary="Create a new note for a patient by an authenticated doctor",
     operation_id="add_note",
 )
-async def add_node(
+async def add_note(
     note: NoteCreate, db: DBSessionDependency, user: CurrentUserDependency
 ):
     """## Add Note
@@ -118,7 +118,7 @@ async def add_node(
             error="You are unauthorized to perform this action"
         )
 
-    # Ensure that doctors can only notes for their patients
+    # Ensure that doctors can write notes only for their patients
     if not is_my_patient(patient_id=note.patient_id, doctor=user):
         raise ForbiddenActionError(error="This is not a patient of yours")
 
@@ -257,7 +257,7 @@ async def list_notes(
     - **200 OK**
       - **Content**: `application/json`
       - **Example**:
-        ```json
+        ```jsohn
         {
           "message": "Notes retrieved successfully",
           "status_code": 200,
