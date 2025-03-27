@@ -44,7 +44,9 @@ class Note(BaseModel, table=True):
         """
         return encryption.decrypt(content=self.encrypted_content)
 
-    def save(self, *, db: DBSessionDependency, created: bool = False, **kwargs):
+    def save(
+        self, *, db: DBSessionDependency, created: bool = False, **kwargs
+    ) -> User:
         """Save the new note."""
         content = kwargs.get("content")
 
