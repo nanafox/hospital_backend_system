@@ -59,9 +59,7 @@ async def api_client(session: Session):
             session.close()
 
     app.dependency_overrides[get_session] = override_get_session
-    yield AsyncClient(
-        base_url="http://api.test.com", transport=ASGITransport(app=app)
-    )
+    yield AsyncClient(base_url="http://api.test.com", transport=ASGITransport(app=app))
 
 
 @pytest.fixture
