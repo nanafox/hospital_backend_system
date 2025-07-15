@@ -7,6 +7,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, status
 
+from app.core.config import settings
 from app.core.dependencies import DBSessionDependency
 from app.crud.patient_doctor import crud_patient_doctor
 from app.crud.user import crud_user
@@ -26,7 +27,7 @@ from app.schemas.patient_doctor import (
     PatientDoctorReadBase,
 )
 
-router = APIRouter(tags=["Patients & Doctors"], prefix="/api/v1")
+router = APIRouter(tags=["Patients & Doctors"], prefix=f"/api/{settings.api_version}")
 
 
 @router.post(
@@ -164,7 +165,7 @@ async def list_doctors(db: DBSessionDependency):
 
 def __build_patient_doctors_response(
     patient_id: UUID, doctors: List[PatientDoctorModel], message: str
-):
+) -> PatientDoctorRead:
     """Builds the response for patient-doctor records."""
     return PatientDoctorRead(
         message=message,
@@ -187,7 +188,7 @@ def __build_doctor_patients_response(
     patients: List[PatientDoctorModel],
     message: str,
     status_code=status.HTTP_201_CREATED,
-):
+) -> DoctorPatientRead:
     """Builds the response for patient-doctor records."""
     patient_data = [
         DoctorPatient(

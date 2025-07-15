@@ -45,3 +45,4 @@ htmlcov/
 
 # FastAPI Specific
 instance/
+*.db

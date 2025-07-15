@@ -17,12 +17,14 @@ from app.schemas.user import UserCreate, UserRoleEnum
 def setup_teardown_test_db():
     """Performs setup and tear-down for the test database."""
     print("Setting up test database")
-    subprocess.run(["./setup_test_db.sh"])
+    if settings.db_type != "sqlite":
+        subprocess.run(["./setup_test_db.sh"])
 
     yield
 
     print("Tearing down test database")
-    subprocess.run(["./teardown_test_db.sh"])
+    if settings.db_type != "sqlite":
+        subprocess.run(["./teardown_test_db.sh"])
 
 
 @pytest.fixture

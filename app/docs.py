@@ -35,7 +35,7 @@ storage of medical notes, and background task processing to manage follow-ups an
 ### **2. SQLAlchemy for Database ORM**
 - SQLAlchemy provides a robust ORM that integrates well with relational databases.
 - The current implementation can work with any database backend, such as MySQL,
-  PostgreSQL or SQLite. We are using **Postgres**.
+  Postgres or SQLite. We are using **Postgres**.
 
 ### **3. Role-Based Access Control (RBAC)**
 - Doctors and Patients have different permissions:

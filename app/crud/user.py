@@ -23,7 +23,8 @@ class UserCrud(APICrudBase[User, schemas.User]):
         """
         super().__init__(model)
 
-    def get_by_email(self, *, email: str, db: Session) -> User:
+    @staticmethod
+    def get_by_email(*, email: str, db: Session) -> User:
         """Get a user by email.
 
         Args:

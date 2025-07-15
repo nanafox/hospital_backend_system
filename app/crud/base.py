@@ -55,9 +55,7 @@ class APICrudBase(Generic[ModelType, SchemaType]):
             return "The data provided is not correct"
 
         detail_error = detail_error.replace("DETAIL:  Key ", "")
-        detail_error = (
-            detail_error.replace("(", "").replace(")=", " ").replace(")", "")
-        )
+        detail_error = detail_error.replace("(", "").replace(")=", " ").replace(")", "")
         detail_error = detail_error.replace('"', "'")
         return detail_error
 
@@ -97,6 +95,7 @@ class APICrudBase(Generic[ModelType, SchemaType]):
             limit: The maximum number of objects to return.
             order_by: The field to order the objects by.
             filter_by: The field to filter records with
+            join_model: The model to join with.
 
         Returns:
             A list of all objects.
@@ -141,9 +140,7 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         """
         try:
             obj = self.model.model_validate(schema)
-            return self.model(**obj.model_dump()).save(
-                db=db, created=True, **kwargs
-            )
+            return self.model(**obj.model_dump()).save(db=db, created=True, **kwargs)
         except Exception as e:
             error_name = e.__class__.__name__
 
@@ -182,9 +179,9 @@ class APICrudBase(Generic[ModelType, SchemaType]):
                 error=f"You are not authorized to update this {self.model_name}",
             )
         try:
-            return db_obj.sqlmodel_update(
-                schema.model_dump(exclude_unset=True)
-            ).save(db=db)
+            return db_obj.sqlmodel_update(schema.model_dump(exclude_unset=True)).save(
+                db=db
+            )
         except Exception as error:
             raise HTTPException(
                 detail={
@@ -213,8 +210,6 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         """
         obj = self.get_by_id(db=db, obj_id=obj_id)
         if obj_owner_id != obj_id:
-            raise ForbiddenActionError(
-                error="You are forbidden to perform this action"
-            )
+            raise ForbiddenActionError(error="You are forbidden to perform this action")
 
         obj.delete(db=db)
