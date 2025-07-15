@@ -141,6 +141,7 @@ async def list_patients(user: CurrentUserDependency):
         doctor_id=user.id,
         patients=user.patients,
         message="Assigned patients retrieved successfully",
+        status_code=status.HTTP_200_OK,
     )
 
 
@@ -182,7 +183,10 @@ def __build_patient_doctors_response(
 
 
 def __build_doctor_patients_response(
-    doctor_id: UUID, patients: List[PatientDoctorModel], message: str
+    doctor_id: UUID,
+    patients: List[PatientDoctorModel],
+    message: str,
+    status_code=status.HTTP_201_CREATED,
 ):
     """Builds the response for patient-doctor records."""
     patient_data = [
@@ -196,7 +200,7 @@ def __build_doctor_patients_response(
 
     return DoctorPatientRead(
         message=message,
-        status_code=status.HTTP_201_CREATED,
+        status_code=status_code,
         data=DoctorPatientReadBase(
             doctor_id=doctor_id,
             patients=patient_data,
