@@ -45,7 +45,7 @@ async def assign_doctors(
 ):
     """**This endpoint is accessible only by patients.**
 
-    It allows patients to add the doctors they prefer in order to
+    It allows patients to add the doctors they prefer to
     receive treatment from them. Multiple doctors can be assigned to a
     patient at a time, simply provide a list of the doctor IDs
     """
