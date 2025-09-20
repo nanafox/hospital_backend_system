@@ -10,7 +10,7 @@ from app.models.note import Note
 from app.models.patient_doctor import PatientDoctor
 from app.models.user import User
 from app.schemas.base import Token
-from app.schemas.note import NoteResponse, NotesResponse
+from app.schemas.note import NotesResponse, NoteResponse
 from app.services import encryption
 
 
@@ -222,9 +222,7 @@ class TestNotesListingEndpoint:
         """Tests that patients can see only their notes given by their
         doctor."""
         # add doc_joe as the doctor for each of the users
-        PatientDoctor(patient_id=patient_bob.id, doctor_id=doc_jdoe.id).save(
-            db=session
-        )
+        PatientDoctor(patient_id=patient_bob.id, doctor_id=doc_jdoe.id).save(db=session)
 
         PatientDoctor(patient_id=patient_sally.id, doctor_id=doc_jdoe.id).save(
             db=session

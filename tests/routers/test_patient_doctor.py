@@ -26,9 +26,7 @@ class TestPatientDoctorCreationEndpoint:
     available list of doctors.
     """
 
-    async def test_create_with_unauthenticated_user(
-        self, api_client: AsyncClient
-    ):
+    async def test_create_with_unauthenticated_user(self, api_client: AsyncClient):
         response: Response = await api_client.post(
             "/api/v1/me/doctors",
             json={
@@ -301,9 +299,7 @@ class TestPatientDoctorDeletionEndpoint:
         )
 
         assert response.status_code == status.HTTP_200_OK
-        assert (
-            response.json().get("message") == "Doctors unassigned successfully"
-        )
+        assert response.json().get("message") == "Doctors unassigned successfully"
 
         # Verify that the association instance was deleted
         assert PatientDoctor.count(db=session) == 0
@@ -349,9 +345,7 @@ class TestAssignedDoctorsListingEndpoint:
         assert assigned_doctors_response.status_code == status.HTTP_200_OK
 
         # verify that the doctor's ID is in the response
-        doctors = PatientDoctorRead(
-            **assigned_doctors_response.json()
-        ).data.doctors
+        doctors = PatientDoctorRead(**assigned_doctors_response.json()).data.doctors
 
         assert doc_jdoe.id == doctors[0].doctor_id
 
@@ -363,9 +357,7 @@ class TestDoctorPatientsListingEndpoint:
     This endpoint is only accessible to doctors.
     """
 
-    async def test_listing_with_unauthenticated_user(
-        self, api_client: AsyncClient
-    ):
+    async def test_listing_with_unauthenticated_user(self, api_client: AsyncClient):
         """Test that unauthenticated users are not granted access."""
         response: Response = await api_client.get("/api/v1/me/patients")
 
@@ -439,9 +431,7 @@ class TestDoctorPatientsListingEndpoint:
 
         assert assigned_patients_response.status_code == status.HTTP_200_OK
 
-        # verify that the patient is in the doctors list of of patients
-        patients = DoctorPatientRead(
-            **assigned_patients_response.json()
-        ).data.patients
+        # verify that the patient is in the doctors list of patients
+        patients = DoctorPatientRead(**assigned_patients_response.json()).data.patients
 
         assert patients[0].patient_id == patient_sally.id

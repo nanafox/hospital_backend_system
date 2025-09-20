@@ -114,9 +114,7 @@ async def add_note(
     - Notes
     """
     if user.role != "Doctor":
-        raise ForbiddenActionError(
-            error="You are unauthorized to perform this action"
-        )
+        raise ForbiddenActionError(error="You are unauthorized to perform this action")
 
     # Ensure that doctors can write notes only for their patients
     if not is_my_patient(patient_id=note.patient_id, doctor=user):
@@ -142,9 +140,7 @@ async def add_note(
     status_code=HTTP_200_OK,
     operation_id="get_note",
 )
-def get_note(
-    note_id: UUID, db: DBSessionDependency, user: CurrentUserDependency
-):
+def get_note(note_id: UUID, db: DBSessionDependency, user: CurrentUserDependency):
     """## Retrieve Note Details
 
     ### Endpoint
@@ -211,15 +207,13 @@ def get_note(
       - Doctors can only access notes they created.
       - Patients can only access notes associated with their ID.
     """
-    note = crud_note.get_by_id(db=db, obj_id=str(note_id))
+    note = crud_note.get_by_id(db=db, obj_id=note_id)
 
     # Ensure the correct user can access the note
     if (user.role == "Doctor" and note.doctor_id != user.id) or (
         user.role == "Patient" and note.patient_id != user.id
     ):
-        raise ForbiddenActionError(
-            error="You are not authorized to read this note"
-        )
+        raise ForbiddenActionError(error="You are not authorized to read this note")
 
     return NoteResponse(
         message="Note retrieved successfully",

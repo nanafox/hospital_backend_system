@@ -22,8 +22,9 @@ class PatientDoctorCrud(APICrudBase[PatientDoctor, schemas.PatientDoctorBase]):
         """Initialize the PatientDoctorCrud class."""
         super().__init__(model)
 
+    @staticmethod
     def get_by_patient_and_doctor(
-        self, *, patient_id: UUID, doctor_id: UUID, db: Session
+        *, patient_id: UUID, doctor_id: UUID, db: Session
     ) -> PatientDoctor:
         """Retrieve a specific patient-doctor relationship."""
         if record := db.exec(
@@ -55,9 +56,7 @@ class PatientDoctorCrud(APICrudBase[PatientDoctor, schemas.PatientDoctorBase]):
         valid_doctor_ids = self._validate_doctors(db, new_doctor_ids)
         return self._insert_assignments(db, patient_id, valid_doctor_ids)
 
-    def delete(
-        self, *, patient_id: UUID, doctor_ids: List[UUID], db: Session
-    ) -> None:
+    def delete(self, *, patient_id: UUID, doctor_ids: List[UUID], db: Session) -> None:
         """Delete multiple patient-doctor relationships.
 
         Args:
@@ -86,9 +85,7 @@ class PatientDoctorCrud(APICrudBase[PatientDoctor, schemas.PatientDoctorBase]):
                 db.delete(record)
             db.commit()
 
-    def _get_existing_assignments(
-        self, db: Session, patient_id: UUID
-    ) -> Set[UUID]:
+    def _get_existing_assignments(self, db: Session, patient_id: UUID) -> Set[UUID]:
         """Fetch doctors already assigned to a patient."""
         return set(
             db.scalars(
@@ -98,9 +95,7 @@ class PatientDoctorCrud(APICrudBase[PatientDoctor, schemas.PatientDoctorBase]):
             ).all()
         )
 
-    def _validate_doctors(
-        self, db: Session, doctor_ids: Set[UUID]
-    ) -> Set[UUID]:
+    def _validate_doctors(self, db: Session, doctor_ids: Set[UUID]) -> Set[UUID]:
         """Ensure doctor IDs exist and belong to users with the role
         'doctor'."""
         valid_doctor_ids = set(

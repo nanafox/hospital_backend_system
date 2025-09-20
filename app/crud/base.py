@@ -1,4 +1,5 @@
 from typing import Any, Dict, Generic, TypeVar
+from uuid import UUID
 
 from fastapi import HTTPException, status
 from sqlmodel import Session, SQLModel, select
@@ -59,7 +60,7 @@ class APICrudBase(Generic[ModelType, SchemaType]):
         detail_error = detail_error.replace('"', "'")
         return detail_error
 
-    def get_by_id(self, *, db: Session, obj_id: str) -> ModelType:
+    def get_by_id(self, *, db: Session, obj_id: UUID) -> ModelType:
         """Returns a single object by its id.
 
         Args:
