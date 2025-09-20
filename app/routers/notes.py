@@ -251,7 +251,7 @@ async def list_notes(
     - **200 OK**
       - **Content**: `application/json`
       - **Example**:
-        ```jsohn
+        ```json
         {
           "message": "Notes retrieved successfully",
           "status_code": 200,

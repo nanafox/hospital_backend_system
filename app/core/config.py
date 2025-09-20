@@ -7,6 +7,11 @@ from datetime import datetime, timedelta, timezone
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def generate_encryption_key() -> str:
+    """Generates a default encryption key."""
+    return os.urandom(32).hex()
+
+
 class Settings(BaseSettings):
     """Defines the configurations for the hospital backend system."""
 
@@ -43,12 +48,12 @@ class Settings(BaseSettings):
     maximum_password_length: int = 15
 
     # LLM integration
-    llm_api_key: str
-    llm_model: str
+    llm_api_key: str = os.getenv("LLM_API_KEY") or os.getenv("GEMINI_API_KEY")
+    llm_model: str = "gemini-2.5-flash"
 
     # Encryption settings. This is used to encrypt doctor notes
-    encryption_key: str
-    encryption_algorithm: str
+    encryption_key: str = generate_encryption_key()
+    encryption_algorithm: str = "AES"
 
     # Redis (for Caching & Background Jobs)
     redis_host: str = "localhost"
